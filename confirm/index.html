@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm Email | QuickWit</title>
+  <meta name="description" content="Confirm your QuickWit email and return to the iPhone app." />
+  <link rel="icon" type="image/png" href="/assets/quickwit-icon-v3.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: oklch(0.18 0.045 252);
+      --navy-soft: oklch(0.24 0.05 252);
+      --ink: oklch(0.23 0.045 252);
+      --body: oklch(0.47 0.035 252);
+      --sapphire: #2E5BDE;
+      --sapphire-deep: #2447B7;
+      --sky: #B8D2EF;
+      --cream: #F2E8D5;
+      --paper: oklch(0.985 0.008 80);
+      --card: oklch(0.99 0.006 80);
+      --line: rgba(29, 47, 89, 0.12);
+      --champagne: #D0A14B;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 82% 12%, rgba(208, 161, 75, 0.22), transparent 24rem),
+        linear-gradient(180deg, var(--navy) 0%, var(--navy-soft) 100%);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(320px, 460px);
+      gap: clamp(26px, 6vw, 76px);
+      align-items: center;
+      width: min(1080px, 100%);
+    }
+
+    .brand-panel {
+      color: var(--paper);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: clamp(42px, 8vw, 82px);
+      color: var(--paper);
+      text-decoration: none;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .brand img {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+    }
+
+    .eyebrow {
+      margin: 0 0 18px;
+      color: var(--champagne);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 610px;
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: clamp(48px, 8vw, 92px);
+      font-weight: 400;
+      line-height: 0.96;
+    }
+
+    h1 span {
+      color: #F0A54A;
+    }
+
+    .brand-copy {
+      max-width: 510px;
+      margin: 24px 0 0;
+      color: rgba(250, 248, 242, 0.72);
+      font-size: clamp(17px, 2vw, 21px);
+      font-weight: 500;
+      line-height: 1.55;
+    }
+
+    .card {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 34px;
+      background: rgba(250, 248, 242, 0.92);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.24);
+      padding: clamp(26px, 4vw, 42px);
+    }
+
+    .card-logo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .card-logo strong {
+      color: var(--ink);
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .secure-pill {
+      border-radius: 999px;
+      background: rgba(46, 91, 222, 0.1);
+      color: var(--sapphire);
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: clamp(31px, 4vw, 42px);
+      font-weight: 400;
+      line-height: 1.05;
+    }
+
+    .subtitle {
+      margin: 12px 0 26px;
+      color: var(--body);
+      font-size: 15px;
+      line-height: 1.58;
+    }
+
+    .status {
+      border-radius: 22px;
+      padding: 18px 18px;
+      color: var(--body);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .status strong {
+      color: var(--ink);
+    }
+
+    .status.loading {
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.58));
+      background-size: 220% 100%;
+      animation: shimmer 1.7s var(--ease) infinite;
+    }
+
+    .status.success {
+      border-color: rgba(46, 91, 222, 0.18);
+      background: rgba(46, 91, 222, 0.09);
+    }
+
+    .status.error {
+      border-color: rgba(139, 26, 26, 0.16);
+      background: rgba(139, 26, 26, 0.08);
+      color: #7A1E1E;
+    }
+
+    .button {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 54px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--sapphire);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 14px 34px rgba(46, 91, 222, 0.24);
+      transition: transform 180ms var(--ease), background 180ms var(--ease);
+    }
+
+    .button.show {
+      display: inline-flex;
+    }
+
+    .button:hover {
+      background: var(--sapphire-deep);
+      transform: translateY(-2px);
+    }
+
+    .button:active {
+      transform: translateY(1px) scale(0.99);
+    }
+
+    .app-hint {
+      display: none;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(208, 161, 75, 0.14);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .app-hint.show {
+      display: block;
+    }
+
+    .help {
+      margin: 22px 0 0;
+      color: var(--body);
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .help a {
+      color: var(--sapphire);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .help a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 120% 0; }
+      100% { background-position: -120% 0; }
+    }
+
+    @media (max-width: 820px) {
+      body {
+        display: block;
+        padding: 18px;
+      }
+
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .brand {
+        margin-bottom: 42px;
+      }
+
+      .brand-panel {
+        padding: 18px 4px 0;
+      }
+
+      .card {
+        border-radius: 28px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="brand-panel" aria-label="QuickWit account confirmation">
+      <a class="brand" href="/">
+        <img src="/assets/quickwit-icon-v3.svg" alt="" width="38" height="38" />
+        <span>QuickWit</span>
+      </a>
+      <p class="eyebrow">Account setup</p>
+      <h1>Confirm your <span>email</span></h1>
+      <p class="brand-copy">Once this link checks out, your account is ready. Open QuickWit on your iPhone and continue your guided speaking path.</p>
+    </section>
+
+    <section class="card" aria-labelledby="confirm-title">
+      <div class="card-logo">
+        <strong>QuickWit</strong>
+        <span class="secure-pill">Secure link</span>
+      </div>
+      <h2 id="confirm-title">Checking your link</h2>
+      <p class="subtitle">We are verifying your QuickWit confirmation link.</p>
+
+      <div id="status" class="status loading">
+        Checking your confirmation link...
+      </div>
+
+      <button id="app-btn" class="button" onclick="openApp()">Open QuickWit on iPhone</button>
+
+      <div id="app-hint" class="app-hint">
+        On your iPhone? Tap the button above to open the app and sign in.
+      </div>
+
+      <p class="help" id="help-text">
+        Having trouble? <a href="mailto:support@getquickwit.com">Contact support</a>
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://dspeqpxonmwvuvxzithx.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzcGVxcHhvbm13dnV2eHppdGh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2Mjk0MjAsImV4cCI6MjA4ODIwNTQyMH0.8xL2nvpZk-8p22xXrYn1-hygrGtCwIN8h9HeNCvm_Ao";
+  </script>
+  <script>
+    const APP_DEEP_LINK = "quickwit://";
+    const APP_STORE_LINK = "https://apps.apple.com/app/id6760188562";
+
+    const { createClient } = supabase;
+    const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const statusEl = document.getElementById("status");
+    const appBtn = document.getElementById("app-btn");
+    const appHint = document.getElementById("app-hint");
+    const helpText = document.getElementById("help-text");
+
+    function showSuccess() {
+      statusEl.className = "status success";
+      statusEl.innerHTML = "<strong>Email confirmed.</strong><br>Your QuickWit account is ready. Open the app on your iPhone to sign in.";
+      appBtn.classList.add("show");
+      appHint.classList.add("show");
+    }
+
+    function showError(detail) {
+      statusEl.className = "status error";
+      statusEl.innerHTML = "<strong>Confirmation failed.</strong><br>" +
+        (detail || "This link may have expired or already been used.") +
+        "<br><br>Please sign up again in the QuickWit app to get a new confirmation email.";
+      helpText.innerHTML = 'Need help? <a href="mailto:support@getquickwit.com">Contact support</a>';
+    }
+
+    function openApp() {
+      const fallbackTimer = setTimeout(() => {
+        window.location.href = APP_STORE_LINK;
+      }, 1500);
+
+      window.location.href = APP_DEEP_LINK;
+      window.addEventListener("blur", () => clearTimeout(fallbackTimer), { once: true });
+    }
+
+    async function initPage() {
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+
+      const code = searchParams.get("code");
+      const tokenHash = searchParams.get("token_hash");
+      const typeParam = searchParams.get("type");
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+
+      if (code) {
+        const { error } = await client.auth.exchangeCodeForSession(code);
+        if (error) {
+          showError(error.message);
+          return;
+        }
+        showSuccess();
+        return;
+      }
+
+      if (tokenHash && typeParam) {
+        const otpType = (typeParam === "signup" || typeParam === "email") ? "email" : typeParam;
+        const { error } = await client.auth.verifyOtp({
+          token_hash: tokenHash,
+          type: otpType,
+        });
+        if (error) {
+          showError(error.message);
+          return;
+        }
+        showSuccess();
+        return;
+      }
+
+      if (accessToken && refreshToken) {
+        const { error } = await client.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        if (error) {
+          showError(error.message);
+          return;
+        }
+        showSuccess();
+        return;
+      }
+
+      showError("No confirmation parameters were found in this link. Please use the link from your confirmation email.");
+    }
+
+    initPage().catch(function (err) {
+      showError("Unexpected error: " + (err && err.message ? err.message : String(err)));
+    });
+  </script>
+</body>
+</html>
