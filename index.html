@@ -3,938 +3,695 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QuickWit | Practice Speaking Under Pressure</title>
-  <meta name="description" content="QuickWit gives you short guided speaking sessions, a clear path, and useful feedback so you can answer faster under pressure." />
-  <meta property="og:title" content="QuickWit | Practice Speaking Under Pressure" />
-  <meta property="og:description" content="Short guided sessions help you think faster, start sooner, and respond with more confidence." />
+  <title>QuickWit</title>
+  <meta name="description" content="That gap between hearing the question and opening your mouth? It's a muscle. QuickWit trains it." />
+  <meta property="og:title" content="QuickWit" />
+  <meta property="og:description" content="The gap between hearing the question and opening your mouth is a muscle. Train it." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://getquickwit.com/assets/orb-active.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/quickwit-icon-v3.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; }
 
     :root {
-      --navy: oklch(0.18 0.045 252);
-      --navy-soft: oklch(0.24 0.05 252);
-      --ink: oklch(0.23 0.045 252);
-      --body: oklch(0.47 0.035 252);
-      --muted: oklch(0.61 0.035 252);
-      --sapphire: #2E5BDE;
-      --sapphire-deep: #2447B7;
-      --sky: #B8D2EF;
-      --cream: #F2E8D5;
-      --paper: oklch(0.985 0.008 80);
-      --card: oklch(0.99 0.006 80);
-      --line: rgba(29, 47, 89, 0.12);
-      --champagne: #D0A14B;
-      --shadow: 0 24px 70px rgba(23, 35, 59, 0.14);
+      --bg: #050505;
+      --fg: #FAF8F2;
+      --gold: #D0A14B;
+      --blue: #2E5BDE;
+      --blue-deep: #2447B7;
+      --muted: rgba(250, 248, 242, 0.4);
+      --dim: rgba(250, 248, 242, 0.12);
+      --faint: rgba(250, 248, 242, 0.06);
+      --serif: 'Playfair Display', Georgia, serif;
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
       --ease: cubic-bezier(0.16, 1, 0.3, 1);
-      --serif: Georgia, "Times New Roman", serif;
-      --sans: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    html { min-height: 100%; scroll-behavior: smooth; background: var(--navy); }
+    html { background: var(--bg); scroll-behavior: smooth; }
 
     body {
       margin: 0;
-      min-height: 100dvh;
       font-family: var(--sans);
-      color: var(--ink);
+      color: var(--fg);
       background:
-        radial-gradient(circle at 88% 10%, rgba(208, 161, 75, 0.22), transparent 28rem),
-        radial-gradient(circle at 10% 38%, rgba(46, 91, 222, 0.16), transparent 26rem),
-        linear-gradient(180deg, var(--navy) 0%, var(--navy) 38%, var(--sky) 38.1%, var(--cream) 100%);
+        radial-gradient(circle at 50% 20%, rgba(46, 91, 222, 0.04), transparent 60%),
+        var(--bg);
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
+      overflow: hidden;
     }
+
+    body.unlocked { overflow-y: auto; overflow-x: hidden; }
 
     body::after {
       content: "";
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: 0.055;
+      opacity: 0.04;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       z-index: 9999;
     }
 
-    .page { overflow-x: hidden; max-width: 100vw; }
     a { color: inherit; }
     img { display: block; max-width: 100%; }
 
-    /* ---- NAV ---- */
+    /* NAV */
     .nav {
       position: fixed;
-      inset: 0 0 auto;
-      z-index: 50;
-      padding: 18px clamp(18px, 4vw, 56px);
-      color: var(--paper);
-    }
-
-    .nav-inner {
+      top: 0; left: 0; right: 0;
+      z-index: 100;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 18px;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 10px 12px 10px 14px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 999px;
-      background: rgba(9, 22, 39, 0.62);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(18px);
+      padding: 24px clamp(24px, 5vw, 64px);
+      opacity: 0;
+      transition: opacity 1s var(--ease);
     }
+    .nav.show { opacity: 1; }
 
     .brand {
       display: inline-flex;
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
     }
+    .brand img { width: 28px; height: 28px; border-radius: 7px; }
 
-    .brand img { width: 34px; height: 34px; border-radius: 9px; }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: clamp(14px, 2.4vw, 28px);
-      color: rgba(250, 248, 242, 0.76);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .nav-links a { text-decoration: none; transition: color 180ms var(--ease); }
-    .nav-links a:hover { color: var(--paper); }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      min-height: 46px;
-      padding: 13px 20px;
-      border: 0;
-      border-radius: 999px;
-      background: var(--sapphire);
-      color: oklch(0.99 0.006 80);
-      font-family: var(--sans);
-      font-size: 15px;
-      font-weight: 800;
-      line-height: 1;
+    .nav-dl {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       text-decoration: none;
-      box-shadow: 0 14px 34px rgba(46, 91, 222, 0.28);
-      transform: translateY(0);
-      transition: transform 180ms var(--ease), background 180ms var(--ease), box-shadow 180ms var(--ease);
+      color: var(--muted);
+      transition: color 0.3s;
     }
+    .nav-dl:hover { color: var(--fg); }
 
-    .btn:hover {
-      background: var(--sapphire-deep);
-      box-shadow: 0 18px 42px rgba(46, 91, 222, 0.32);
-      transform: translateY(-2px);
-    }
-
-    .btn:active { transform: translateY(1px) scale(0.99); }
-
-    .btn.ghost {
-      border: 1px solid rgba(242, 232, 213, 0.28);
-      background: rgba(242, 232, 213, 0.08);
-      color: var(--paper);
-      box-shadow: none;
-    }
-
-    .btn.ghost:hover { background: rgba(242, 232, 213, 0.14); box-shadow: none; }
-
-    /* ---- HERO ---- */
-    .hero {
+    /* OPENING */
+    .opening {
       position: relative;
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.75fr);
-      align-items: center;
-      gap: clamp(34px, 6vw, 78px);
-      max-width: 1220px;
-      min-height: 100dvh;
-      margin: 0 auto;
-      padding: clamp(104px, 12vh, 142px) clamp(20px, 5vw, 64px) clamp(42px, 7vw, 88px);
-      color: var(--paper);
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 12% -16% 8% auto;
-      width: 52%;
-      border: 1px solid rgba(208, 161, 75, 0.2);
-      border-left: 0;
-      border-radius: 0 0 110px 0;
-      opacity: 0.6;
-    }
-
-    .hero-copy { position: relative; z-index: 2; max-width: 760px; }
-
-    .eyebrow {
-      margin: 0 0 18px;
-      color: var(--champagne);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-    }
-
-    h1, h2, h3 {
-      margin: 0;
-      color: inherit;
-      font-family: var(--serif);
-      font-weight: 400;
-      letter-spacing: 0;
-    }
-
-    .hero-title {
-      max-width: 760px;
-      font-size: clamp(52px, 8vw, 112px);
-      line-height: 0.92;
-    }
-
-    .hero-title span { color: #F0A54A; }
-
-    .hero-sub {
-      max-width: 520px;
-      margin: 28px 0 0;
-      color: rgba(250, 248, 242, 0.74);
-      font-size: clamp(18px, 2.2vw, 24px);
-      font-weight: 500;
-      line-height: 1.5;
-    }
-
-    .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 34px; }
-
-    .hero-note {
-      margin-top: 16px;
-      color: rgba(250, 248, 242, 0.5);
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .hero-visual {
-      position: relative;
-      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 100dvh;
+      padding: 40px;
+      cursor: pointer;
     }
 
-    .hero-phone {
-      width: auto;
-      max-width: min(380px, 82vw);
-      max-height: min(700px, 76dvh);
-      border-radius: 38px;
-      filter: drop-shadow(0 36px 60px rgba(0, 0, 0, 0.38));
+    .bracket {
+      position: absolute;
+      width: 28px; height: 28px;
+      opacity: 0;
+      transition: opacity 0.8s var(--ease);
     }
+    .bracket.show { opacity: 1; }
+    .bracket.tl { top: 8%; left: 6%; border-top: 0.5px solid var(--dim); border-left: 0.5px solid var(--dim); }
+    .bracket.tr { top: 8%; right: 6%; border-top: 0.5px solid var(--dim); border-right: 0.5px solid var(--dim); }
+    .bracket.bl { bottom: 8%; left: 6%; border-bottom: 0.5px solid var(--dim); border-left: 0.5px solid var(--dim); }
+    .bracket.br { bottom: 8%; right: 6%; border-bottom: 0.5px solid var(--dim); border-right: 0.5px solid var(--dim); }
 
-    .hero-phone.init { opacity: 0; transform: translateY(28px); }
-
-    /* ---- BELOW FOLD ---- */
-    .below-fold {
-      background: linear-gradient(180deg, rgba(184, 210, 239, 0.96) 0%, rgba(242, 232, 213, 0.98) 18rem, var(--cream) 100%);
-      color: var(--ink);
-    }
-
-    .section {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: clamp(80px, 11vw, 140px) clamp(20px, 5vw, 64px);
-    }
-
-    .section.tight {
-      padding-top: clamp(56px, 7vw, 88px);
-      padding-bottom: clamp(56px, 7vw, 88px);
-    }
-
-    .kicker {
-      margin: 0 0 14px;
-      color: var(--sapphire);
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 0.11em;
-      text-transform: uppercase;
-    }
-
-    .sec-title {
-      max-width: 760px;
-      color: var(--ink);
-      font-size: clamp(40px, 6vw, 82px);
-      line-height: 0.98;
-    }
-
-    .sec-lede {
-      max-width: 620px;
-      margin: 22px 0 0;
-      color: var(--body);
-      font-size: clamp(17px, 2vw, 21px);
-      font-weight: 500;
-      line-height: 1.6;
-    }
-
-    /* ---- PROBLEM ---- */
-    .problem-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 0.82fr) minmax(300px, 1.18fr);
-      gap: clamp(34px, 6vw, 76px);
-      align-items: start;
-    }
-
-    .contrast-list { margin-top: 10px; border-top: 1px solid var(--line); }
-
-    .contrast-row {
-      display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 24px;
-      padding: 24px 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .contrast-row strong { color: var(--ink); font-size: 15px; }
-    .contrast-row p { margin: 0; color: var(--body); font-size: 16px; line-height: 1.65; }
-
-    /* ---- HOW IT WORKS (3-PHONE) ---- */
-    .how-steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: clamp(20px, 3vw, 40px);
-      margin-top: clamp(48px, 6vw, 80px);
-    }
-
-    .step {
+    .opening-prompt, .opening-reveal {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 90%;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
     }
 
-    .step-phone {
-      width: 100%;
-      max-width: 260px;
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 24px 60px rgba(23, 35, 59, 0.18);
-      transition: transform 500ms var(--ease), box-shadow 500ms var(--ease);
+    .prompt-text {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(24px, 4vw, 44px);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin: 0;
+      max-width: 600px;
+      opacity: 0;
+      transition: opacity 0.8s var(--ease);
+    }
+    .prompt-text.show { opacity: 1; }
+    .prompt-text.hide { opacity: 0; }
+    .hl { color: var(--gold); }
+
+    .prompt-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 28px;
+      opacity: 0;
+      transition: opacity 0.6s var(--ease);
+    }
+    .prompt-meta.show { opacity: 1; }
+    .prompt-meta.hide { opacity: 0; }
+
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
     }
 
-    .step:hover .step-phone {
-      transform: translateY(-6px);
-      box-shadow: 0 32px 72px rgba(23, 35, 59, 0.24);
+    .timer {
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
     }
 
-    .step-phone img { width: 100%; height: auto; }
+    .reveal-1, .reveal-2 {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(28px, 5vw, 56px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin: 0;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .reveal-1.show, .reveal-2.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-2 { margin-top: 6px; }
 
-    .step-num {
-      display: grid;
-      place-items: center;
-      width: 36px;
-      height: 36px;
-      margin-top: 24px;
-      border-radius: 999px;
-      background: var(--sapphire);
-      color: var(--paper);
-      font-weight: 800;
-      font-size: 14px;
+    .scroll-hint {
+      position: absolute;
+      bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 1s var(--ease);
+    }
+    .scroll-hint.show { opacity: 1; }
+    .scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(250, 248, 242, 0.25);
+    }
+    .scroll-line {
+      width: 1px; height: 28px;
+      background: linear-gradient(to bottom, var(--dim), transparent);
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.7; }
     }
 
-    .step h3 {
-      margin-top: 14px;
-      font-size: clamp(22px, 2.6vw, 30px);
-      line-height: 1.1;
-      color: var(--ink);
+    /* STORY */
+    .story {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(100px, 18vh, 200px) clamp(24px, 5vw, 64px);
+      gap: clamp(64px, 12vh, 140px);
     }
 
-    .step p {
-      max-width: 280px;
-      margin: 10px 0 0;
-      color: var(--body);
-      font-size: 15px;
-      line-height: 1.55;
+    .story-line {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(26px, 4.5vw, 52px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      max-width: 700px;
+      margin: 0;
+    }
+    .story-line.gold { color: var(--gold); }
+
+    /* PRODUCT */
+    .product {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(60px, 10vh, 120px) clamp(24px, 5vw, 64px) clamp(100px, 16vh, 180px);
     }
 
-    /* ---- LANES ---- */
-    .lanes-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      margin-top: 44px;
-    }
-
-    .lane-card { padding: 22px 0; border-top: 1px solid var(--line); }
-    .lane-card strong { display: block; color: var(--ink); font-size: 16px; line-height: 1.35; }
-    .lane-card p { margin: 9px 0 0; color: var(--body); font-size: 16px; line-height: 1.6; }
-
-    /* ---- PATH ---- */
-    .path-row {
-      display: grid;
-      grid-template-columns: 0.92fr 1.08fr;
-      gap: clamp(28px, 5vw, 60px);
-      align-items: start;
-      margin-top: 52px;
-    }
-
-    .path-copy {
-      position: sticky;
-      top: 118px;
-      padding-top: 10px;
-    }
-
-    .path-copy h3 {
-      color: var(--ink);
-      font-size: clamp(32px, 4vw, 50px);
-      line-height: 1.04;
-    }
-
-    .path-copy > p {
-      max-width: 440px;
-      margin: 18px 0 0;
-      color: var(--body);
-      font-size: 17px;
-      line-height: 1.62;
-    }
-
-    .proof-list { display: grid; gap: 16px; margin-top: 34px; }
-
-    .proof-item {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 14px;
-      align-items: start;
-    }
-
-    .proof-dot {
-      display: grid;
-      place-items: center;
-      width: 36px;
-      height: 36px;
-      border-radius: 999px;
-      background: rgba(46, 91, 222, 0.1);
-      color: var(--sapphire);
-    }
-
-    .proof-item strong { display: block; color: var(--ink); font-size: 15px; }
-    .proof-item span { display: block; margin-top: 2px; color: var(--body); font-size: 14px; line-height: 1.45; }
-
-    .gallery-mosaic {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      align-items: start;
-    }
-
-    .gallery-tile {
+    .phone-wrap {
       position: relative;
-      overflow: hidden;
-      border-radius: 26px;
-      background: var(--navy);
-      box-shadow: 0 18px 50px rgba(23, 35, 59, 0.16);
-      transition: transform 500ms var(--ease);
+      width: clamp(180px, 20vw, 240px);
     }
-
-    .gallery-tile:hover { transform: translateY(-4px); }
-
-    .gallery-tile img {
+    .phone-wrap::before {
+      content: '';
+      position: absolute;
+      top: 15%; left: -30%; right: -30%; bottom: -15%;
+      background: radial-gradient(circle, rgba(46, 91, 222, 0.1), transparent 65%);
+      border-radius: 50%;
+    }
+    .phone-wrap img {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: auto;
-      display: block;
+      border-radius: clamp(24px, 4vw, 38px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
     }
 
-    .gallery-tile:nth-child(2) { margin-top: 48px; }
-    .gallery-tile:nth-child(3) { margin-top: -22px; }
-
-    .tile-label {
-      position: absolute;
-      inset: auto 10px 10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      background: rgba(9, 22, 39, 0.72);
-      color: rgba(250, 248, 242, 0.86);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      backdrop-filter: blur(12px);
+    .product-tag {
+      margin: clamp(36px, 6vh, 64px) 0 0;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 3vw, 32px);
+      letter-spacing: -0.02em;
     }
 
-    /* ---- RESULTS BAND ---- */
-    .results-band { background: var(--navy); color: var(--paper); }
+    .product-note {
+      margin: 14px 0 0;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
 
-    .results-inner {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(240px, 0.7fr);
-      gap: clamp(30px, 6vw, 76px);
+    /* HOW SECTIONS */
+    .how {
+      display: flex;
+      flex-direction: column;
       align-items: center;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: clamp(86px, 11vw, 140px) clamp(20px, 5vw, 64px);
+      text-align: center;
+      padding: clamp(72px, 12vh, 140px) clamp(24px, 5vw, 64px);
+      border-top: 0.5px solid var(--faint);
     }
 
-    .results-inner .sec-title { color: var(--paper); }
-    .results-inner .sec-lede { color: rgba(250, 248, 242, 0.72); }
-
-    .results-notes { display: grid; gap: 8px; margin-top: 34px; }
-
-    .result-note { padding: 18px 0; border-top: 1px solid rgba(242, 232, 213, 0.14); }
-    .result-note strong { display: block; color: var(--paper); font-size: 16px; }
-    .result-note span { display: block; max-width: 500px; margin-top: 4px; color: rgba(250, 248, 242, 0.6); line-height: 1.55; }
-
-    .results-phone {
-      width: min(100%, 280px);
-      justify-self: center;
-      border-radius: 34px;
-      overflow: hidden;
-      box-shadow: 0 34px 80px rgba(0, 0, 0, 0.36);
-      transform: rotate(2deg);
-    }
-
-    .results-phone img { width: 100%; height: auto; }
-
-    /* ---- SCIENCE ---- */
-    .science-row {
-      display: grid;
-      grid-template-columns: 0.88fr 1.12fr;
-      gap: clamp(30px, 5vw, 72px);
-      align-items: center;
-    }
-
-    .science-poster {
-      overflow: hidden;
-      border-radius: 30px;
-      background: var(--navy);
-      box-shadow: var(--shadow);
-    }
-
-    .science-poster img { width: 100%; height: auto; }
-
-    .science-card {
-      padding: clamp(28px, 5vw, 50px);
-      border: 1px solid var(--line);
-      border-radius: 30px;
-      background: rgba(250, 248, 242, 0.6);
-      box-shadow: 0 18px 50px rgba(23, 35, 59, 0.08);
-    }
-
-    .science-entries { display: grid; gap: 22px; margin-top: 28px; }
-    .science-entries p { margin: 0; color: var(--body); font-size: 15px; line-height: 1.62; }
-    .science-entries strong { color: var(--ink); }
-    .science-entries cite { color: var(--muted); font-size: 12px; font-style: normal; }
-
-    /* ---- FINAL CTA ---- */
-    .final-cta {
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 80% 20%, rgba(208, 161, 75, 0.28), transparent 28rem),
-        linear-gradient(135deg, var(--navy) 0%, var(--navy-soft) 100%);
-      color: var(--paper);
-    }
-
-    .final-inner {
-      display: grid;
-      grid-template-columns: 1fr 0.68fr;
-      gap: clamp(28px, 5vw, 70px);
-      align-items: center;
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: clamp(84px, 10vw, 132px) clamp(20px, 5vw, 64px);
-    }
-
-    .final-inner h2 {
-      max-width: 720px;
-      font-size: clamp(44px, 6.5vw, 88px);
-      line-height: 0.96;
-    }
-
-    .final-inner > div > p {
+    .how-prompt {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 3.2vw, 34px);
+      line-height: 1.3;
+      letter-spacing: -0.02em;
       max-width: 520px;
-      margin: 22px 0 0;
-      color: rgba(250, 248, 242, 0.7);
-      font-size: clamp(17px, 2vw, 21px);
-      line-height: 1.55;
+      margin: 0 0 clamp(40px, 7vh, 80px);
     }
 
-    .final-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
-
-    .mini-device {
-      width: min(100%, 220px);
-      justify-self: center;
-      border-radius: 30px;
-      overflow: hidden;
-      box-shadow: 0 34px 80px rgba(0, 0, 0, 0.35);
-      transform: rotate(-3deg);
+    .how-phone {
+      width: clamp(150px, 18vw, 200px);
+      margin-bottom: clamp(28px, 4vh, 48px);
+    }
+    .how-phone img {
+      width: 100%;
+      height: auto;
+      border-radius: clamp(20px, 3vw, 30px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
 
-    .mini-device img { width: 100%; height: auto; }
-
-    /* ---- FOOTER ---- */
-    footer {
-      background: var(--navy);
-      color: rgba(250, 248, 242, 0.55);
-      border-top: 1px solid rgba(242, 232, 213, 0.1);
+    .how-title {
+      font-family: var(--serif);
+      font-size: clamp(18px, 2.4vw, 26px);
+      font-weight: 400;
+      margin: 0 0 10px;
+      letter-spacing: -0.01em;
     }
 
+    .how-text {
+      max-width: 400px;
+      margin: 0;
+      font-size: clamp(13px, 1.4vw, 15px);
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* PROOF */
+    .proof {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: clamp(100px, 16vh, 180px) clamp(24px, 5vw, 64px);
+      border-top: 0.5px solid var(--faint);
+    }
+
+    .proof-title {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(26px, 4vw, 44px);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin: 0 0 clamp(48px, 7vh, 80px);
+    }
+
+    .proof-facts {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 480px;
+      text-align: left;
+    }
+    .proof-facts p {
+      margin: 0;
+      padding: 28px 0;
+      font-size: clamp(13px, 1.4vw, 15px);
+      line-height: 1.75;
+      color: var(--muted);
+      border-top: 0.5px solid var(--faint);
+    }
+    .proof-facts strong { color: var(--fg); font-weight: 500; }
+
+    /* FINALE */
+    .finale {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 100dvh;
+      padding: 60px clamp(24px, 5vw, 64px);
+      position: relative;
+    }
+
+    .finale-prompt {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(30px, 5vw, 56px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .finale-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .dot-static {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      opacity: 0.5;
+    }
+
+    .finale-text {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: clamp(20px, 3vw, 30px);
+      letter-spacing: -0.02em;
+      margin: clamp(48px, 8vh, 88px) 0 0;
+      line-height: 1.3;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 28px;
+      padding: 16px 40px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--blue);
+      color: var(--fg);
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      box-shadow: 0 16px 40px rgba(46, 91, 222, 0.3);
+      transition: transform 0.3s var(--ease), background 0.3s, box-shadow 0.3s;
+    }
+    .cta-btn:hover {
+      background: var(--blue-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 20px 50px rgba(46, 91, 222, 0.35);
+    }
+    .cta-btn:active { transform: translateY(1px) scale(0.98); }
+
+    .finale-note {
+      margin: 16px 0 0;
+      font-size: 12px;
+      color: rgba(250, 248, 242, 0.25);
+      letter-spacing: 0.04em;
+    }
+
+    /* FOOTER */
+    footer { border-top: 0.5px solid var(--faint); }
     .footer-inner {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 22px;
-      max-width: 1180px;
+      gap: 16px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 30px clamp(20px, 5vw, 64px);
-      font-size: 13px;
-      font-weight: 600;
+      padding: 28px clamp(24px, 5vw, 64px);
+      font-size: 12px;
+      color: rgba(250, 248, 242, 0.3);
     }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--fg); }
 
-    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
-    .footer-links a { text-decoration: none; transition: color 180ms var(--ease); }
-    .footer-links a:hover { color: var(--paper); }
-
-    /* ---- REVEAL ANIMATIONS ---- */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* SCROLL REVEAL */
+    .sr {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
     }
-    @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.92); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    @keyframes floatIn {
-      from { opacity: 0; transform: translateY(28px) rotate(1deg); }
-      to { opacity: 1; transform: translateY(0) rotate(0deg); }
-    }
-
-    .reveal { opacity: 0; animation: fadeUp 0.8s var(--ease) forwards; }
-    .reveal.d1 { animation-delay: 0.1s; }
-    .reveal.d2 { animation-delay: 0.22s; }
-    .reveal.d3 { animation-delay: 0.34s; }
-    .reveal.d4 { animation-delay: 0.46s; }
-    .reveal.d5 { animation-delay: 0.58s; }
-
-    .hero-phone { opacity: 0; animation: floatIn 0.9s var(--ease) 0.2s forwards; }
-
-    .scroll-reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
-    .scroll-reveal.scale { transform: scale(0.92); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
-    .scroll-reveal.visible { opacity: 1; transform: translateY(0) scale(1); }
-
-    /* ---- RESPONSIVE ---- */
-    @media (max-width: 940px) {
-      .nav { padding: 12px 14px; }
-      .nav-links { display: none; }
-
-      .hero,
-      .problem-grid,
-      .path-row,
-      .results-inner,
-      .science-row,
-      .final-inner {
-        grid-template-columns: 1fr;
-      }
-
-      .hero { align-items: start; min-height: auto; padding-top: 116px; }
-
-      .how-steps { grid-template-columns: 1fr; gap: 48px; }
-      .step-phone { max-width: 240px; }
-
-      .path-copy { position: static; }
-
-      .final-inner { padding-bottom: 96px; }
-    }
-
-    @media (max-width: 660px) {
-      .nav-inner { padding-right: 8px; }
-      .nav .btn { min-height: 40px; padding: 11px 14px; font-size: 13px; }
-      .brand span { display: none; }
-      .hero-title { font-size: clamp(48px, 15vw, 78px); }
-      .hero-actions, .final-actions { flex-direction: column; align-items: stretch; }
-      .btn { width: 100%; }
-      .contrast-row { grid-template-columns: 1fr; gap: 8px; }
-      .lanes-grid { grid-template-columns: 1fr; }
-      .gallery-mosaic { grid-template-columns: 1fr; }
-      .gallery-tile:nth-child(2), .gallery-tile:nth-child(3) { margin-top: 0; }
-      .results-phone, .mini-device { transform: none; }
-      .footer-inner { align-items: flex-start; flex-direction: column; }
-    }
+    .sr.vis { opacity: 1; transform: translateY(0); }
+    .sr.d1 { transition-delay: 0.12s; }
+    .sr.d2 { transition-delay: 0.24s; }
+    .sr.d3 { transition-delay: 0.36s; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
-        scroll-behavior: auto !important;
         animation-duration: 0.001ms !important;
         transition-duration: 0.001ms !important;
       }
-      .scroll-reveal, .reveal { opacity: 1; transform: none; animation: none; }
+      .sr, .reveal-1, .reveal-2 { opacity: 1; transform: none; }
+      .prompt-text, .prompt-meta { opacity: 0 !important; }
+      .nav, .scroll-hint, .bracket { opacity: 1 !important; }
+      body { overflow-y: auto !important; }
+    }
+
+    @media (max-width: 640px) {
+      .bracket { display: none; }
+      .story { padding: 80px 24px; gap: 56px; }
+      .story-line { font-size: clamp(22px, 6.5vw, 32px); }
+      .product { padding: 60px 24px 80px; }
+      .phone-wrap { width: clamp(180px, 52vw, 220px); }
+      .how { padding: 64px 24px; }
+      .how-prompt { font-size: clamp(18px, 5vw, 24px); }
+      .how-phone { width: clamp(160px, 46vw, 200px); }
+      .proof { padding: 80px 24px; }
+      .proof-title { font-size: clamp(22px, 6.5vw, 32px); }
+      .finale { min-height: 80dvh; padding: 60px 24px; }
+      .finale-prompt { font-size: clamp(26px, 7vw, 38px); }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="page">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="/" aria-label="QuickWit home">
+      <img src="assets/quickwit-icon-v3.svg" alt="" width="28" height="28" />
+      <span>QuickWit</span>
+    </a>
+    <a class="nav-dl" href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">Download</a>
+  </nav>
 
-    <!-- NAV -->
-    <nav class="nav" aria-label="Primary navigation">
-      <div class="nav-inner">
-        <a class="brand" href="/" aria-label="QuickWit home">
-          <img src="assets/quickwit-icon-v3.svg" alt="" width="34" height="34" />
-          <span>QuickWit</span>
-        </a>
-        <div class="nav-links">
-          <a href="#how">How it works</a>
-          <a href="#path">Path</a>
-          <a href="#results">Results</a>
-        </div>
-        <a class="btn" href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">Download</a>
+  <!-- OPENING -->
+  <section class="opening" aria-label="Opening experience">
+    <div class="bracket tl"></div>
+    <div class="bracket tr"></div>
+    <div class="bracket bl"></div>
+    <div class="bracket br"></div>
+
+    <div class="opening-prompt">
+      <p class="prompt-text">"You're at a dinner party.<br>Someone turns to you: '<span class="hl">So what's your story?</span>'"</p>
+      <div class="prompt-meta">
+        <span class="dot"></span>
+        <span class="timer">00:00</span>
       </div>
-    </nav>
+    </div>
 
-    <!-- HERO -->
-    <header class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow reveal d1">Guided voice practice for iPhone</p>
-        <h1 class="hero-title reveal d2">You knew the <span>answer.</span></h1>
-        <p class="hero-sub reveal d3">You were standing right there. The question wasn't even hard. But your mouth didn't move. Later, in the car, the perfect response came. Fluent. Sharp. Obvious. That gap is trainable. QuickWit trains it.</p>
-        <div class="hero-actions reveal d4">
-          <a class="btn" href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">Start your first session</a>
-          <a class="btn ghost" href="#how">See how it works</a>
-        </div>
-        <p class="hero-note reveal d5">iOS &middot; 7-day free trial &middot; No payment due now</p>
+    <div class="opening-reveal">
+      <p class="reveal-1">That pause you just felt?</p>
+      <p class="reveal-2">That's what we train.</p>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <main>
+    <!-- STORY -->
+    <section class="story" aria-label="The story">
+      <p class="story-line sr">You had the perfect thing to say.</p>
+      <p class="story-line sr">They were right there. Smiling.<br>The moment was wide open.</p>
+      <p class="story-line sr">But your mouth didn't move.</p>
+      <p class="story-line sr">Twenty minutes later, walking to the car,<br>every word arrived. Smooth. Easy. Obvious.</p>
+      <p class="story-line gold sr">That gap is a muscle.<br>You just haven't been training it.</p>
+    </section>
+
+    <!-- PRODUCT -->
+    <section class="product" aria-label="The app">
+      <div class="phone-wrap sr">
+        <img src="assets/orb-active.jpg" alt="QuickWit AI coaching orb" width="886" height="1920" fetchpriority="high" />
       </div>
-      <div class="hero-visual" aria-hidden="true">
-        <img class="hero-phone" src="assets/orb-active.jpg" alt="" width="886" height="1920" fetchpriority="high" />
+      <p class="product-tag sr">Five minutes. Your voice. Real pressure.</p>
+      <p class="product-note sr">iOS &middot; Free trial &middot; No payment due now</p>
+    </section>
+
+    <!-- HOW 1 -->
+    <section class="how" aria-label="Step one">
+      <p class="how-prompt sr">"Your date leans in. 'What do you<br>actually do for <span class="hl">fun</span>?'"</p>
+      <div class="how-phone sr d1">
+        <img src="assets/learning-path.jpg" alt="QuickWit learning path" loading="lazy" />
       </div>
-    </header>
+      <h3 class="how-title sr d2">Pick your pressure</h3>
+      <p class="how-text sr d3">First dates. Group dinners. Meeting new people. You tell QuickWit where you go blank, and it builds a path around that. Not generic confidence tips. Your specific gap.</p>
+    </section>
 
-    <main class="below-fold">
-
-      <!-- PROBLEM -->
-      <section class="section tight" aria-labelledby="problem-heading">
-        <div class="problem-grid">
-          <div>
-            <p class="kicker scroll-reveal">Let me explain</p>
-            <h2 id="problem-heading" class="sec-title scroll-reveal">The answer was always there.</h2>
-            <p class="sec-lede scroll-reveal">Here's what nobody tells you about freezing: it's not a knowledge problem. You knew what to say. The problem was the three-second window between hearing the question and opening your mouth. That window is where confidence lives or dies. And it can be trained like any other skill.</p>
-          </div>
-          <div class="contrast-list scroll-reveal">
-            <div class="contrast-row">
-              <strong>What you tried</strong>
-              <p>You memorized talking points. Rehearsed in the shower. Watched a YouTube video about "power poses." And the next time it mattered, you froze anyway.</p>
-            </div>
-            <div class="contrast-row">
-              <strong>Why it failed</strong>
-              <p>Because you practiced the script, not the pressure. Your brain needs reps under tension, not more material to forget.</p>
-            </div>
-            <div class="contrast-row">
-              <strong>What works</strong>
-              <p>Short, timed, spoken rounds that recreate the pressure and make starting feel familiar. That's what QuickWit does.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- HOW IT WORKS -->
-      <section id="how" class="section" aria-labelledby="how-heading">
-        <div style="text-align:center; max-width:680px; margin:0 auto;">
-          <p class="kicker scroll-reveal">Here's how it works</p>
-          <h2 id="how-heading" class="sec-title scroll-reveal" style="margin:0 auto;">Five minutes. That's it.</h2>
-          <p class="sec-lede scroll-reveal" style="margin:20px auto 0;">You open the app, face a realistic moment, answer out loud, and get told exactly what happened. The whole thing takes less time than the pep talk you give yourself in the bathroom mirror.</p>
-        </div>
-        <div class="how-steps">
-          <div class="step">
-            <div class="step-phone scroll-reveal scale">
-              <img src="assets/learning-path.jpg" alt="QuickWit learning path with structured modules" loading="lazy" />
-            </div>
-            <div class="step-num">1</div>
-            <h3>Pick your pressure</h3>
-            <p>Interviews. Sales calls. First dates. You tell QuickWit where you freeze, and it builds a path around that. Not generic advice. Your specific gap.</p>
-          </div>
-          <div class="step">
-            <div class="step-phone scroll-reveal scale">
-              <img src="assets/prompt-scene.jpg" alt="A realistic speaking prompt narrated by the orb" loading="lazy" />
-            </div>
-            <div class="step-num">2</div>
-            <h3>Answer out loud</h3>
-            <p>A scenario appears. The timer starts. You speak. Not in your head. Not silently. Out loud, into the pressure, the way it actually happens in real life.</p>
-          </div>
-          <div class="step">
-            <div class="step-phone scroll-reveal scale">
-              <img src="assets/session-scores.jpg" alt="Session review with coaching scores and feedback" loading="lazy" />
-            </div>
-            <div class="step-num">3</div>
-            <h3>See what happened</h3>
-            <p>The AI tells you where you started strong, where you stalled, and what to do differently tomorrow. No participation trophies. No inflated scores. Just the truth.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- LANES -->
-      <section class="section tight" aria-labelledby="lanes-heading">
-        <p class="kicker scroll-reveal">Sound familiar?</p>
-        <h2 id="lanes-heading" class="sec-title scroll-reveal">Where do you freeze?</h2>
-        <p class="sec-lede scroll-reveal">Everyone has a version of this. The moment is different, but the feeling is identical. QuickWit trains the one that costs you the most.</p>
-        <div class="lanes-grid scroll-reveal">
-          <div class="lane-card">
-            <strong>Interviews</strong>
-            <p>"Tell me about a time when..." and your mind empties. You had three examples ready. Now you have zero. QuickWit trains you to start talking before the panic takes over.</p>
-          </div>
-          <div class="lane-card">
-            <strong>Sales</strong>
-            <p>The prospect says "we're happy with our current solution" and you go quiet for two seconds too long. Those two seconds cost you the deal. Not anymore.</p>
-          </div>
-          <div class="lane-card">
-            <strong>Networking</strong>
-            <p>"So what do you do?" Six words. You've answered this question a thousand times. And somehow, right now, you can't find the sentence. QuickWit fixes that.</p>
-          </div>
-          <div class="lane-card">
-            <strong>Dating &amp; Social</strong>
-            <p>The conversation hits a wall. You feel it dying. You know you're interesting, you just can't prove it right now. This is a trainable skill, not a personality trait.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PATH -->
-      <section id="path" class="section" aria-labelledby="path-heading">
-        <p class="kicker scroll-reveal">But here's the thing</p>
-        <h2 id="path-heading" class="sec-title scroll-reveal">You don't need more time. You need five minutes with a plan.</h2>
-        <p class="sec-lede scroll-reveal">Most people who freeze under pressure don't lack ability. They lack reps. QuickWit gives you a structured path so every session builds on the last one, not a random playlist of exercises you'll abandon in a week.</p>
-        <div class="path-row">
-          <div class="path-copy">
-            <h3 class="scroll-reveal">The app knows where you left off. You just show up.</h3>
-            <p class="scroll-reveal">Open the app, and your next session is already queued. Each module trains one specific communication gap. Finish it, and the next one appears. No decisions, no browsing, no friction between you and the rep that matters.</p>
-            <div class="proof-list">
-              <div class="proof-item scroll-reveal">
-                <div class="proof-dot" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 6.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div><strong>One tap to start</strong><span>No menus, no choices. Your next session is already waiting.</span></div>
-              </div>
-              <div class="proof-item scroll-reveal">
-                <div class="proof-dot" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 5.5h9a3 3 0 013 3v10H9a3 3 0 01-3-3v-10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 9h6M9 12h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </div>
-                <div><strong>Each module teaches one thing</strong><span>Not a firehose. One skill, practiced until it sticks.</span></div>
-              </div>
-              <div class="proof-item scroll-reveal">
-                <div class="proof-dot" aria-hidden="true">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M5 11l7-7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div><strong>Honest progress tracking</strong><span>You'll see what's actually improving. No inflated scores, no "great job" for showing up.</span></div>
-              </div>
-            </div>
-          </div>
-          <div class="gallery-mosaic" aria-label="QuickWit app screens">
-            <figure class="gallery-tile scroll-reveal scale">
-              <img src="assets/home-screen.jpg" alt="QuickWit Home screen with today's guided session" loading="lazy" />
-              <figcaption class="tile-label">Today's session</figcaption>
-            </figure>
-            <figure class="gallery-tile scroll-reveal scale">
-              <img src="assets/learning-path.jpg" alt="QuickWit guided learning path with modules" loading="lazy" />
-              <figcaption class="tile-label">Guided modules</figcaption>
-            </figure>
-            <figure class="gallery-tile scroll-reveal scale">
-              <img src="assets/practice-modes.jpg" alt="QuickWit practice games and session feedback" loading="lazy" />
-              <figcaption class="tile-label">Practice games</figcaption>
-            </figure>
-            <figure class="gallery-tile scroll-reveal scale">
-              <img src="assets/ai-coaching.jpg" alt="AI-generated stronger response example" loading="lazy" />
-              <figcaption class="tile-label">AI coaching</figcaption>
-            </figure>
-          </div>
-        </div>
-      </section>
-
-      <!-- RESULTS -->
-      <section id="results" class="results-band" aria-labelledby="results-heading">
-        <div class="results-inner">
-          <div>
-            <p class="eyebrow scroll-reveal">Now here's the part most apps skip</p>
-            <h2 id="results-heading" class="sec-title scroll-reveal">You finished the session. So what actually happened?</h2>
-            <p class="sec-lede scroll-reveal">Most apps give you a score and a gold star. QuickWit tells you the truth: where you were sharp, where you stalled, and exactly what to work on next. It's the difference between feeling good and getting better.</p>
-            <div class="results-notes">
-              <div class="result-note scroll-reveal"><strong>What you actually did</strong><span>Not what you meant to say. Not what you planned. A short summary of the pattern you fell into, so you can see it clearly.</span></div>
-              <div class="result-note scroll-reveal"><strong>The one thing to change</strong><span>Not twelve suggestions. One. The single adjustment that would have made the biggest difference. That's all you need to carry into tomorrow.</span></div>
-              <div class="result-note scroll-reveal"><strong>Your next session is already loaded</strong><span>The app doesn't leave you staring at a score. It points you forward. Because the only rep that matters is the next one.</span></div>
-            </div>
-          </div>
-          <div class="results-phone scroll-reveal scale">
-            <img src="assets/session-scores.jpg" alt="QuickWit session review with coaching scores" loading="lazy" />
-          </div>
-        </div>
-      </section>
-
-      <!-- SCIENCE -->
-      <section class="section" aria-labelledby="science-heading">
-        <div class="science-row">
-          <div class="science-poster scroll-reveal scale">
-            <img src="assets/ai-coaching.jpg" alt="QuickWit AI coaching showing a stronger response version" loading="lazy" />
-          </div>
-          <div class="science-card scroll-reveal">
-            <p class="kicker">You might be wondering</p>
-            <h2 id="science-heading" class="sec-title">Does this actually work? Here's what the research says.</h2>
-            <div class="science-entries">
-              <p><strong>Your nervous system can learn that pressure isn't danger.</strong> Simulated exposure creates a measurable dose response. Do it enough times, and your body stops triggering the freeze. This isn't motivation. It's neuroscience. <cite>(Smith &amp; Bell, 2014)</cite></p>
-              <p><strong>Hesitation makes you less believable.</strong> A study of 7,500+ people found that slower responses are perceived as less sincere. The people who got the job, closed the deal, or landed the date weren't smarter. They started talking sooner. <cite>(Ziano &amp; Wang, 2021)</cite></p>
-              <p><strong>Your brain needs a framework, not more content.</strong> Under pressure, working memory collapses. A simple spoken structure keeps your answer organized when your mind wants to shut down. <cite>(Sweller, 1988)</cite></p>
-              <p><strong>Thinking about what you'd say doesn't count.</strong> Silent rehearsal skips the hardest part: opening your mouth. Speaking out loud builds a retrieval path that thinking alone never creates. <cite>(Huang, 2022)</cite></p>
-              <p><strong>"Calm down" is bad advice.</strong> Reframing anxiety as excitement shifts your body into a challenge state and measurably improves performance. QuickWit is built around this reframe. <cite>(Jamieson, Nock &amp; Mendes, 2012)</cite></p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FINAL CTA -->
-      <section class="final-cta" aria-labelledby="cta-heading">
-        <div class="final-inner">
-          <div>
-            <p class="eyebrow scroll-reveal">One last thing</p>
-            <h2 id="cta-heading" class="scroll-reveal">The next time it matters, you'll be ready.</h2>
-            <p class="scroll-reveal">You've read this far, which means you already know the feeling. The freeze. The silence. The perfect answer that arrives ten minutes too late. That gap closes with practice. Your first session takes five minutes and costs nothing. Start it now, and tomorrow you'll know what you're working with.</p>
-            <div class="final-actions scroll-reveal">
-              <a class="btn" href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">Start your first session free</a>
-              <a class="btn ghost" href="privacy-policy/">Privacy policy</a>
-            </div>
-          </div>
-          <div class="mini-device scroll-reveal scale">
-            <img src="assets/learning-path.jpg" alt="" loading="lazy" />
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div class="footer-inner">
-        <div>&copy; 2026 Blue Ribbon Ops LLC. QuickWit is available on iOS.</div>
-        <div class="footer-links">
-          <a href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">App Store</a>
-          <a href="privacy-policy/">Privacy Policy</a>
-          <a href="mailto:support@getquickwit.com">Support</a>
-        </div>
+    <!-- HOW 2 -->
+    <section class="how" aria-label="Step two">
+      <p class="how-prompt sr">"The table goes quiet. Someone looks<br>at you. 'You're being awfully <span class="hl">quiet</span><br>over there.'"</p>
+      <div class="how-phone sr d1">
+        <img src="assets/prompt-scene.jpg" alt="QuickWit speaking prompt" loading="lazy" />
       </div>
-    </footer>
-  </div>
+      <h3 class="how-title sr d2">Answer out loud</h3>
+      <p class="how-text sr d3">A scenario appears. The timer starts. You talk. Not in your head. Out loud, into the discomfort, the way it actually happens when someone's looking right at you.</p>
+    </section>
+
+    <!-- HOW 3 -->
+    <section class="how" aria-label="Step three">
+      <p class="how-prompt sr">"'Tell them that story about...'<br>Your friend looks at you. Everyone's <span class="hl">waiting</span>."</p>
+      <div class="how-phone sr d1">
+        <img src="assets/session-scores.jpg" alt="QuickWit session scores and feedback" loading="lazy" />
+      </div>
+      <h3 class="how-title sr d2">See what happened</h3>
+      <p class="how-text sr d3">The AI tells you where you landed, where you stalled, and what to sharpen. No participation trophies. Just the honest read you'd want from a good friend.</p>
+    </section>
+
+    <!-- PROOF -->
+    <section class="proof" aria-label="The science">
+      <h2 class="proof-title sr">"Does this actually work?"</h2>
+      <div class="proof-facts">
+        <p class="sr"><strong>Your nervous system can learn that pressure isn't danger.</strong> Simulated exposure creates a measurable dose response. Do it enough times, and your body stops triggering the freeze. This isn't motivation. It's neuroscience.</p>
+        <p class="sr"><strong>Faster responses are perceived as more sincere.</strong> A study of 7,500+ people found that the ones who landed the date, made the connection, or owned the room weren't smarter. They started talking sooner.</p>
+        <p class="sr"><strong>Thinking about what you'd say doesn't count.</strong> Silent rehearsal skips the hardest part: opening your mouth under pressure. Speaking out loud builds a retrieval path that thinking alone never creates.</p>
+      </div>
+    </section>
+
+    <!-- FINALE -->
+    <section class="finale" aria-label="Get started">
+      <p class="finale-prompt sr">"So what do <span class="hl">you</span> do?"</p>
+      <div class="finale-meta sr d1">
+        <span class="dot-static"></span>
+        <span class="timer" style="color: var(--muted);">00:03</span>
+      </div>
+      <p class="finale-text sr d2">Your first session is free.<br>Five minutes.</p>
+      <a class="cta-btn sr d3" href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">Start now</a>
+      <p class="finale-note sr d3">iOS &middot; No payment due now</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <span>&copy; 2026 Blue Ribbon Ops LLC</span>
+      <div class="footer-links">
+        <a href="https://apps.apple.com/us/app/quickwit-ai-improv-coach/id6760188562" target="_blank" rel="noopener">App Store</a>
+        <a href="privacy-policy/">Privacy</a>
+        <a href="mailto:support@getquickwit.com">Support</a>
+      </div>
+    </div>
+  </footer>
 
   <script>
-    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    (function () {
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var body = document.body;
+      var opening = document.querySelector('.opening');
+      var promptEl = opening.querySelector('.prompt-text');
+      var metaEl = opening.querySelector('.prompt-meta');
+      var brackets = opening.querySelectorAll('.bracket');
+      var reveal1 = opening.querySelector('.reveal-1');
+      var reveal2 = opening.querySelector('.reveal-2');
+      var nav = document.querySelector('.nav');
+      var hint = opening.querySelector('.scroll-hint');
+      var timerEl = opening.querySelector('.timer');
+      var seconds = 0;
+      var interval;
+      var done = false;
+
+      function finish() {
+        if (done) return;
+        done = true;
+        clearInterval(interval);
+        promptEl.classList.remove('show');
+        promptEl.classList.add('hide');
+        metaEl.classList.remove('show');
+        metaEl.classList.add('hide');
+        setTimeout(function () {
+          reveal1.classList.add('show');
+          setTimeout(function () {
+            reveal2.classList.add('show');
+            setTimeout(function () {
+              nav.classList.add('show');
+              hint.classList.add('show');
+              body.classList.add('unlocked');
+              opening.style.cursor = 'default';
+            }, 800);
+          }, 1000);
+        }, 700);
+      }
+
+      if (reduced) {
+        reveal1.classList.add('show');
+        reveal2.classList.add('show');
+        nav.classList.add('show');
+        hint.classList.add('show');
+        body.classList.add('unlocked');
+        brackets.forEach(function (b) { b.classList.add('show'); });
+        done = true;
+        return;
+      }
+
+      setTimeout(function () {
+        promptEl.classList.add('show');
+        brackets.forEach(function (b) { b.classList.add('show'); });
+      }, 300);
+
+      setTimeout(function () {
+        metaEl.classList.add('show');
+        interval = setInterval(function () {
+          seconds++;
+          timerEl.textContent = '00:0' + seconds;
+          if (seconds >= 4) finish();
+        }, 1000);
+      }, 900);
+
+      opening.addEventListener('click', finish);
+
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
           if (e.isIntersecting) {
-            e.target.classList.add('visible');
+            e.target.classList.add('vis');
             io.unobserve(e.target);
           }
         });
-      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-      document.querySelectorAll('.scroll-reveal').forEach(function (el) { io.observe(el); });
-    } else {
-      document.querySelectorAll('.scroll-reveal').forEach(function (el) {
-        el.style.opacity = '1';
-        el.style.transform = 'none';
-      });
-    }
+      }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+      document.querySelectorAll('.sr').forEach(function (el) { io.observe(el); });
+    })();
   </script>
 </body>
 </html>
